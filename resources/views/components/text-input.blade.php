@@ -1,7 +1,7 @@
 
 <label>
     <span>
-        {{ $label }}
+        {{ $getLabel() }}
     </span>
     <input type="text"/>
 </label>

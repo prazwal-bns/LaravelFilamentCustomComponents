@@ -20,14 +20,23 @@ class TextInput implements Htmlable
         return new self($name);
     }
 
-    public function render(): View
+    public function extractPublicMethods(): array
     {
-        return view('components.text-input', [
-            'label' => $this->getLabel()
-        ]);
+        $reflection = new \ReflectionClass($this);
+        $methods=[];
+        foreach($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+            $methods[$method->getName()] = \Closure::fromCallable([$this, $method->getName()]);
+        }
+        return $methods;
     }
 
-    public function getLabel(){
+    public function render(): View
+    {
+        return view('components.text-input', $this->extractPublicMethods());
+    }
+
+    public function getLabel(): string
+    {
         return $this->label ?? str($this->name)
             ->title();
     }
